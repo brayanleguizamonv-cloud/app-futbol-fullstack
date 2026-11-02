@@ -1,0 +1,34 @@
+  version: '3.8'
+
+  services:
+    # Definimos el servicio de nuestra base de datos
+    db_futbol:
+      # Usamos la imagen oficial de PostgreSQL (versión 15, muy estable)
+      image: postgres:15
+
+      # Nombre del contenedor para identificarlo fácilmente en la terminal
+      container_name: postgres_futbol_app
+
+      # POLÍTICA DE REINICIO: Si Docker se enciende o el contenedor falla, se levanta solo
+      restart: always
+
+      # VARIABLES DE ENTORNO: Credenciales esenciales para inicializar la BD
+      environment:
+        POSTGRES_USER: admin_futbol      # Usuario raíz de la base de datos
+        POSTGRES_PASSWORD: admin_pass    # Contraseña (en producción nunca va en texto plano)
+        POSTGRES_DB: app_futbol_db       # Nombre de la base de datos que se creará automáticamente
+
+      # PUERTOS: Mapeo "Puerto_de_tu_PC : Puerto_del_contenedor"
+      # PostgreSQL usa el 5432 por defecto. Exponemos ese puerto hacia tu máquina local.
+      ports:
+        - "5432:5432"
+
+      # VOLÚMENES: Persistencia de datos.
+      # Los contenedores son efímeros (si se borran, se pierden los datos).
+      # Esto enlaza una ruta interna del contenedor con una carpeta administrada por Docker en tu disco duro.
+      volumes:
+        - futbol_db_data:/var/lib/postgresql/data
+
+  # Declaramos el volumen nombrado para que Docker lo cree físicamente
+  volumes:
+    futbol_db_data:
